@@ -1,0 +1,10 @@
+corpus            atepp
+piece             atepp__03427.mid
+segment           frames 4795..6235 of 19181 (stored fps 48; 30 s)
+notes original    491   (raw target onset cells 491; peak-picking k=2 drops exact same-pitch repeats <= 2 frames apart)
+notes recon       550
+onset @25 ms      P 0.8782  R 0.9837  F1 0.9280  (matched 483)
+onset @10 ms      P 0.8655  R 0.9695  F1 0.9145
+active cells      agreement 0.9772  F1 0.9184
+velocity bin      exact 0.8551  +-1 0.9876  (matched notes @25 ms)
+onset time error  1.37 ms mean |dt| (matched notes @25 ms)

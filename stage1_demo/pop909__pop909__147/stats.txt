@@ -1,0 +1,10 @@
+corpus            pop909
+piece             pop909__147.mid
+segment           frames 1596..3036 of 6384 (stored fps 24; 60 quarters = 30 s at 120 bpm)
+notes original    274   (raw target onset cells 274; peak-picking k=2 drops exact same-pitch repeats <= 2 frames apart)
+notes recon       274
+onset @25 ms      P 0.9964  R 0.9964  F1 0.9964  (matched 273)
+onset @10 ms      P 0.9927  R 0.9927  F1 0.9927
+active cells      agreement 0.9985  F1 0.9862
+velocity bin      exact 0.9817  +-1 0.9927  (matched notes @25 ms)
+onset time error  0.13 ms mean |dt| (matched notes @25 ms)

@@ -1,0 +1,10 @@
+corpus            aria
+piece             aria__cb__106809_0.mid
+segment           frames 2105..3545 of 8423 (stored fps 48; 30 s)
+notes original    286   (raw target onset cells 286; peak-picking k=2 drops exact same-pitch repeats <= 2 frames apart)
+notes recon       286
+onset @25 ms      P 1.0000  R 1.0000  F1 1.0000  (matched 286)
+onset @10 ms      P 0.9965  R 0.9965  F1 0.9965
+active cells      agreement 0.9988  F1 0.9744
+velocity bin      exact 0.9930  +-1 0.9965  (matched notes @25 ms)
+onset time error  0.50 ms mean |dt| (matched notes @25 ms)

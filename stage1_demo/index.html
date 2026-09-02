@@ -1,0 +1,108 @@
+<title>Stage-1 reconstruction demo</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 24px 32px; color: #222; }
+h1 { font-size: 20px; }
+h2 { font-size: 16px; margin: 28px 0 4px; border-top: 1px solid #ddd; padding-top: 14px; }
+h3 { font-size: 13px; margin: 0 0 6px; color: #555; }
+.note { font-size: 12px; color: #777; }
+.stats { font-size: 12px; color: #444; font-family: ui-monospace, monospace; margin: 4px 0 12px; }
+.cols { display: flex; gap: 24px; flex-wrap: wrap; }
+.col { flex: 1 1 420px; min-width: 380px; }
+midi-player { width: 100%; }
+midi-visualizer { display: block; height: 160px; overflow: auto; border: 1px solid #eee; }
+img.roll { width: 100%; margin-top: 12px; border: 1px solid #eee; }
+</style>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<h1>Stage-1 reconstruction demo</h1>
+<p class="note">Needs internet: the MIDI players and the soundfont are loaded from a CDN. Serve this directory over HTTP (the players cannot fetch .mid over file://).</p>
+<p class="note">Checkpoint <code>/home/mingyang/all_models/unified_symbolic_rep/stage1_local_encoder/s1a_v0/best.pt</code> (step 26000) — 1440-frame segment (30 s) per piece from 25% of the piece, encoded with a 12-frame overhang per side that is dropped before decoding; both sides decoded to notes with the same rule (peak-picked onsets, +-2 frames, probability &gt;= 0.8).</p>
+<h2>pop909 / pop909__147</h2>
+<p class="stats">notes 274 orig / 274 recon &nbsp; onset@25ms P 0.996 R 0.996 F1 0.996 &nbsp; F1@10ms 0.993 &nbsp; active F1 0.986 &nbsp; vel exact 0.982 &nbsp; mean |dt| 0.13 ms</p>
+<div class="cols">
+<div class="col">
+<h3>Original</h3>
+<midi-player src="pop909__pop909__147/original.mid" visualizer="#vis-orig-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-orig-0" src="pop909__pop909__147/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Reconstruction</h3>
+<midi-player src="pop909__pop909__147/recon.mid" visualizer="#vis-recon-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-recon-0" src="pop909__pop909__147/recon.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="pop909__pop909__147/roll.png">
+<h2>pop909 / pop909__849</h2>
+<p class="stats">notes 225 orig / 226 recon &nbsp; onset@25ms P 0.996 R 1.000 F1 0.998 &nbsp; F1@10ms 0.998 &nbsp; active F1 0.990 &nbsp; vel exact 1.000 &nbsp; mean |dt| 0.08 ms</p>
+<div class="cols">
+<div class="col">
+<h3>Original</h3>
+<midi-player src="pop909__pop909__849/original.mid" visualizer="#vis-orig-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-orig-1" src="pop909__pop909__849/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Reconstruction</h3>
+<midi-player src="pop909__pop909__849/recon.mid" visualizer="#vis-recon-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-recon-1" src="pop909__pop909__849/recon.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="pop909__pop909__849/roll.png">
+<h2>aria / aria__cb__106809_0</h2>
+<p class="stats">notes 286 orig / 286 recon &nbsp; onset@25ms P 1.000 R 1.000 F1 1.000 &nbsp; F1@10ms 0.997 &nbsp; active F1 0.974 &nbsp; vel exact 0.993 &nbsp; mean |dt| 0.50 ms</p>
+<div class="cols">
+<div class="col">
+<h3>Original</h3>
+<midi-player src="aria__aria__cb__106809_0/original.mid" visualizer="#vis-orig-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-orig-2" src="aria__aria__cb__106809_0/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Reconstruction</h3>
+<midi-player src="aria__aria__cb__106809_0/recon.mid" visualizer="#vis-recon-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-recon-2" src="aria__aria__cb__106809_0/recon.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="aria__aria__cb__106809_0/roll.png">
+<h2>aria / aria__bp__082203_0</h2>
+<p class="stats">notes 120 orig / 120 recon &nbsp; onset@25ms P 1.000 R 1.000 F1 1.000 &nbsp; F1@10ms 1.000 &nbsp; active F1 0.997 &nbsp; vel exact 0.992 &nbsp; mean |dt| 0.56 ms</p>
+<div class="cols">
+<div class="col">
+<h3>Original</h3>
+<midi-player src="aria__aria__bp__082203_0/original.mid" visualizer="#vis-orig-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-orig-3" src="aria__aria__bp__082203_0/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Reconstruction</h3>
+<midi-player src="aria__aria__bp__082203_0/recon.mid" visualizer="#vis-recon-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-recon-3" src="aria__aria__bp__082203_0/recon.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="aria__aria__bp__082203_0/roll.png">
+<h2>atepp / atepp__03427</h2>
+<p class="stats">notes 491 orig / 550 recon &nbsp; onset@25ms P 0.878 R 0.984 F1 0.928 &nbsp; F1@10ms 0.915 &nbsp; active F1 0.918 &nbsp; vel exact 0.855 &nbsp; mean |dt| 1.37 ms</p>
+<div class="cols">
+<div class="col">
+<h3>Original</h3>
+<midi-player src="atepp__atepp__03427/original.mid" visualizer="#vis-orig-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-orig-4" src="atepp__atepp__03427/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Reconstruction</h3>
+<midi-player src="atepp__atepp__03427/recon.mid" visualizer="#vis-recon-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-recon-4" src="atepp__atepp__03427/recon.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="atepp__atepp__03427/roll.png">
+<h2>atepp / atepp__07831</h2>
+<p class="stats">notes 82 orig / 89 recon &nbsp; onset@25ms P 0.921 R 1.000 F1 0.959 &nbsp; F1@10ms 0.924 &nbsp; active F1 0.996 &nbsp; vel exact 0.963 &nbsp; mean |dt| 1.13 ms</p>
+<div class="cols">
+<div class="col">
+<h3>Original</h3>
+<midi-player src="atepp__atepp__07831/original.mid" visualizer="#vis-orig-5"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-orig-5" src="atepp__atepp__07831/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Reconstruction</h3>
+<midi-player src="atepp__atepp__07831/recon.mid" visualizer="#vis-recon-5"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-recon-5" src="atepp__atepp__07831/recon.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="atepp__atepp__07831/roll.png">
