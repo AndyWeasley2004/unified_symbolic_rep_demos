@@ -1,0 +1,9 @@
+{
+  "name": "acoustic_grand_piano",
+  "minPitch": 21,
+  "maxPitch": 108,
+  "durationSeconds": 3.0,
+  "releaseSeconds": 1.0,
+  "percussive": false,
+  "velocities": [7, 15, 23, 31, 39, 47, 55, 63, 71, 79, 87, 95, 103, 111, 119, 127]
+}
