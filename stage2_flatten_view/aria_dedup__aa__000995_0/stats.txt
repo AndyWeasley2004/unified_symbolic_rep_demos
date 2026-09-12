@@ -1,0 +1,12 @@
+n_notes            94
+on_frame_frac_in   0.0851
+on_frame_frac_out  1.0000
+n_vel_in           13
+n_vel_out          1
+moved_frac         0.9149
+mean_abs_shift_ms  5.3103
+max_abs_shift_ms   20.0000
+overlap_frac_in    0.8936
+overlap_frac_out   0.0000
+median_dur_ratio   0.5024
+frac_dur_cut       0.9043

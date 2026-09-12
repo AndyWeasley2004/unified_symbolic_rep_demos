@@ -1,0 +1,254 @@
+<title>Contextual Encoder Mechanism</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f3f4f6; --ink:#1b1f26; --muted:#5c6470; --rule:#c9ced6; --panel:#ffffff;
+  --vis:#0e7c7b; --vis-soft:#d6ecea; --mask:#c27a0a; --mask-soft:#f6e6c8; --frozen:#7b8494;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14171c; --ink:#e6e8ec; --muted:#9aa3b0; --rule:#3a414c; --panel:#1c2027;
+    --vis:#4fb8b4; --vis-soft:#153b3a; --mask:#e0a040; --mask-soft:#3f2f14; --frozen:#8c95a3;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14171c; --ink:#e6e8ec; --muted:#9aa3b0; --rule:#3a414c; --panel:#1c2027;
+  --vis:#4fb8b4; --vis-soft:#153b3a; --mask:#e0a040; --mask-soft:#3f2f14; --frozen:#8c95a3;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 "IBM Plex Sans",system-ui,sans-serif;margin:0}
+main{max-width:1040px;margin:0 auto;padding:40px 24px 64px}
+h1{font-size:26px;font-weight:600;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--muted);margin:0 0 28px;max-width:66ch}
+figure{margin:0 0 36px;background:var(--panel);border:1px solid var(--rule);padding:18px 18px 12px;overflow-x:auto}
+svg{max-width:100%;height:auto;display:block;color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+figcaption{color:var(--muted);font-size:13.5px;margin-top:12px;max-width:80ch}
+figcaption b{color:var(--ink);font-weight:600}
+section{max-width:70ch}
+h2{font-size:17px;font-weight:600;margin:28px 0 8px}
+p{margin:0 0 12px}
+code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;background:var(--panel);border:1px solid var(--rule);padding:1px 5px;border-radius:3px}
+table{border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums;margin:8px 0 16px}
+td,th{border-bottom:1px solid var(--rule);padding:6px 14px 6px 0;text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:500}
+.key{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin:0 0 20px}
+.key span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:22px;height:12px;border:1.5px solid;display:inline-block}
+</style>
+<main>
+<h1>Contextual encoder: what one training step does</h1>
+<p class="sub">Stage 2 as implemented in <span class="mono">contextual_encoder/model.py</span> (run s2_v1). One 32 s crop, batch dimension dropped. Read left to right; the amber cells are the only places the loss is computed.</p>
+
+<div class="key">
+  <span><i class="sw" style="border-color:var(--vis);background:var(--vis-soft)"></i> visible latent step (context)</span>
+  <span><i class="sw" style="border-color:var(--mask);background:var(--mask-soft)"></i> masked step (target, loss here)</span>
+  <span><i class="sw" style="border-color:var(--frozen);border-style:dashed"></i> frozen, no gradient</span>
+</div>
+
+<figure>
+<svg viewBox="0 0 1100 600" role="img" aria-label="Piano roll crop enters the frozen Stage-1 encoder, producing 256 latent steps; 30% of steps in contiguous spans are masked; the trunk sees mask tokens at those steps and full self-attention; the predictor's queries at masked positions cross-attend only to visible trunk outputs and predict the teacher latent there; Smooth-L1 loss against the frozen teacher latents at masked steps; the trunk output F is the representation used downstream.">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+  </marker>
+  <marker id="arrMask" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--mask)"/>
+  </marker>
+  <marker id="arrVis" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--vis)"/>
+  </marker>
+</defs>
+
+<!-- ============ Row 1: input roll → teacher → latents ============ -->
+<text x="20" y="30" font-size="12" fill="var(--muted)" font-weight="500" letter-spacing="0.06em">1 · TARGETS (frozen)</text>
+
+<!-- piano roll -->
+<rect x="20" y="44" width="150" height="70" fill="none" stroke="currentColor" stroke-width="1.2"/>
+<g fill="currentColor" opacity="0.55">
+  <rect x="30" y="52" width="26" height="4"/><rect x="60" y="60" width="18" height="4"/><rect x="84" y="52" width="40" height="4"/>
+  <rect x="34" y="70" width="14" height="4"/><rect x="52" y="78" width="30" height="4"/><rect x="90" y="70" width="22" height="4"/><rect x="118" y="78" width="40" height="4"/>
+  <rect x="26" y="92" width="50" height="4"/><rect x="82" y="100" width="28" height="4"/><rect x="118" y="92" width="36" height="4"/>
+</g>
+<text x="95" y="130" font-size="12" text-anchor="middle">piano roll, 32 s</text>
+<text x="95" y="145" font-size="11" text-anchor="middle" class="mono" fill="var(--muted)">4 × 88 × 1560 frames</text>
+
+<line x1="170" y1="79" x2="215" y2="79" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+
+<!-- teacher -->
+<rect x="218" y="50" width="140" height="58" fill="none" stroke="var(--frozen)" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="288" y="74" font-size="12.5" text-anchor="middle" font-weight="600">S1-a encoder</text>
+<text x="288" y="91" font-size="11" text-anchor="middle" fill="var(--muted)">frozen · stride 6 · RF 0.5 s</text>
+<text x="288" y="125" font-size="11" text-anchor="middle" fill="var(--muted)">drop 2 edge steps per side</text>
+
+<line x1="358" y1="79" x2="403" y2="79" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+
+<!-- teacher latents timeline z (target) -->
+<g id="zrow">
+  <!-- 32 cells of 20px = 640px, from x=406 to 1046 -->
+  <text x="406" y="42" font-size="12" font-weight="600">teacher latents z</text>
+  <text x="530" y="42" font-size="11" class="mono" fill="var(--muted)">256 steps × 256 d · 8 fps</text>
+  <g stroke="currentColor" stroke-width="1" fill="none">
+    <rect x="406" y="56" width="640" height="26"/>
+  </g>
+  <!-- masked spans on the target row (same layout as below) -->
+  <rect x="486" y="56" width="80" height="26" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.4"/>
+  <rect x="706" y="56" width="140" height="26" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.4"/>
+  <rect x="926" y="56" width="40" height="26" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.4"/>
+  <g stroke="currentColor" stroke-width="0.6" opacity="0.35">
+    <line x1="426" y1="56" x2="426" y2="82"/><line x1="446" y1="56" x2="446" y2="82"/><line x1="466" y1="56" x2="466" y2="82"/>
+    <line x1="586" y1="56" x2="586" y2="82"/><line x1="606" y1="56" x2="606" y2="82"/><line x1="626" y1="56" x2="626" y2="82"/><line x1="646" y1="56" x2="646" y2="82"/><line x1="666" y1="56" x2="666" y2="82"/><line x1="686" y1="56" x2="686" y2="82"/>
+    <line x1="866" y1="56" x2="866" y2="82"/><line x1="886" y1="56" x2="886" y2="82"/><line x1="906" y1="56" x2="906" y2="82"/>
+    <line x1="986" y1="56" x2="986" y2="82"/><line x1="1006" y1="56" x2="1006" y2="82"/><line x1="1026" y1="56" x2="1026" y2="82"/>
+  </g>
+  <text x="526" y="100" font-size="11" text-anchor="middle" fill="var(--mask)">span 1 s</text>
+  <text x="776" y="100" font-size="11" text-anchor="middle" fill="var(--mask)">span 1.75 s</text>
+  <text x="946" y="100" font-size="11" text-anchor="middle" fill="var(--mask)">0.5 s</text>
+  <text x="726" y="127" font-size="11" text-anchor="middle" fill="var(--muted)">spans 4–32 steps (0.5–4 s), sampled until 30 % of valid steps are covered; same z serves as input and as target</text>
+</g>
+
+<!-- ============ Row 2: input side, masked → trunk ============ -->
+<text x="20" y="176" font-size="12" fill="var(--muted)" font-weight="500" letter-spacing="0.06em">2 · TRUNK (trained; this is the representation)</text>
+
+<!-- masked input row -->
+<text x="406" y="196" font-size="12" font-weight="600">trunk input</text>
+<text x="490" y="196" font-size="11" class="mono" fill="var(--muted)">Linear 256→512 · masked steps ← learned mask token</text>
+<rect x="406" y="206" width="640" height="26" fill="var(--vis-soft)" stroke="var(--vis)" stroke-width="1.2"/>
+<rect x="486" y="206" width="80" height="26" fill="var(--panel)" stroke="var(--mask)" stroke-width="1.4"/>
+<rect x="706" y="206" width="140" height="26" fill="var(--panel)" stroke="var(--mask)" stroke-width="1.4"/>
+<rect x="926" y="206" width="40" height="26" fill="var(--panel)" stroke="var(--mask)" stroke-width="1.4"/>
+<g fill="var(--mask)" font-size="10.5" class="mono" text-anchor="middle">
+  <text x="526" y="223">[M] [M] [M] [M]</text>
+  <text x="776" y="223">[M] [M] [M] [M] [M] [M] [M]</text>
+  <text x="946" y="223">[M] [M]</text>
+</g>
+<!-- z to input arrow (curved down from z row) -->
+<path d="M 380 79 C 380 150, 396 150, 396 219" fill="none" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+<text x="372" y="160" font-size="11" text-anchor="end" fill="var(--muted)">same z,</text>
+<text x="372" y="174" font-size="11" text-anchor="end" fill="var(--muted)">masked</text>
+
+<!-- trunk block -->
+<line x1="726" y1="232" x2="726" y2="262" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+<rect x="406" y="266" width="640" height="54" fill="none" stroke="currentColor" stroke-width="1.4"/>
+<text x="726" y="288" font-size="13" text-anchor="middle" font-weight="600">Transformer trunk · 12 layers × 512 · RoPE · SwiGLU · 37.9 M</text>
+<text x="726" y="307" font-size="11" text-anchor="middle" fill="var(--muted)">full self-attention over all 256 steps, mask tokens included (so context knows where the gaps are and how long)</text>
+<line x1="726" y1="320" x2="726" y2="350" stroke="currentColor" stroke-width="1.2" marker-end="url(#arr)"/>
+
+<!-- F row -->
+<text x="406" y="346" font-size="12" font-weight="600">F = trunk output</text>
+<text x="516" y="346" font-size="11" class="mono" fill="var(--muted)">256 steps × 512 d</text>
+<rect x="406" y="354" width="640" height="26" fill="var(--vis-soft)" stroke="var(--vis)" stroke-width="1.2"/>
+<rect x="486" y="354" width="80" height="26" fill="var(--panel)" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="706" y="354" width="140" height="26" fill="var(--panel)" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="926" y="354" width="40" height="26" fill="var(--panel)" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="526" y="372" font-size="10.5" text-anchor="middle" fill="var(--muted)">unused</text>
+<text x="776" y="372" font-size="10.5" text-anchor="middle" fill="var(--muted)">unused by the loss</text>
+<text x="946" y="372" font-size="10.5" text-anchor="middle" fill="var(--muted)">unused</text>
+
+<!-- downstream note on the left of F -->
+<path d="M 400 367 L 300 367" fill="none" stroke="var(--vis)" stroke-width="1.2" marker-end="url(#arrVis)"/>
+<text x="292" y="362" font-size="11.5" text-anchor="end" font-weight="600">at inference: nothing is masked,</text>
+<text x="292" y="377" font-size="11.5" text-anchor="end">F at every step → Stage-3 heads, probes</text>
+
+<!-- ============ Row 3: predictor ============ -->
+<text x="20" y="424" font-size="12" fill="var(--muted)" font-weight="500" letter-spacing="0.06em">3 · PREDICTOR (trained, then discarded)</text>
+
+<!-- keys/values from visible F -->
+<path d="M 446 380 C 446 420, 446 420, 446 448" fill="none" stroke="var(--vis)" stroke-width="1.2" marker-end="url(#arrVis)"/>
+<path d="M 1006 380 C 1006 420, 1006 420, 1006 448" fill="none" stroke="var(--vis)" stroke-width="1.2" marker-end="url(#arrVis)"/>
+<text x="470" y="412" font-size="11" fill="var(--vis)">keys / values: F at visible steps only</text>
+<text x="1000" y="412" font-size="11" fill="var(--vis)" text-anchor="end">(masked and padded steps are excluded)</text>
+
+<rect x="406" y="452" width="640" height="46" fill="none" stroke="currentColor" stroke-width="1.4"/>
+<text x="726" y="472" font-size="13" text-anchor="middle" font-weight="600">2 × cross-attention + SwiGLU · 6.4 M</text>
+<text x="726" y="489" font-size="11" text-anchor="middle" fill="var(--muted)">queries = mask token + RoPE at the masked position: "what should be at step t, given the visible context?"</text>
+
+<!-- predictions at masked positions -->
+<line x1="526" y1="498" x2="526" y2="522" stroke="var(--mask)" stroke-width="1.4" marker-end="url(#arrMask)"/>
+<line x1="776" y1="498" x2="776" y2="522" stroke="var(--mask)" stroke-width="1.4" marker-end="url(#arrMask)"/>
+<line x1="946" y1="498" x2="946" y2="522" stroke="var(--mask)" stroke-width="1.4" marker-end="url(#arrMask)"/>
+<text x="406" y="540" font-size="12" font-weight="600">predicted ẑ</text>
+<text x="486" y="540" font-size="11" class="mono" fill="var(--muted)">Linear 512→256, read at masked steps</text>
+<rect x="486" y="546" width="80" height="26" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.4"/>
+<rect x="706" y="546" width="140" height="26" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.4"/>
+<rect x="926" y="546" width="40" height="26" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.4"/>
+
+<!-- loss: predicted vs teacher target -->
+<rect x="20" y="470" width="330" height="96" fill="none" stroke="var(--mask)" stroke-width="1.2"/>
+<text x="185" y="492" font-size="12.5" text-anchor="middle" font-weight="600">loss = Smooth-L1( ẑ , z )  at masked ∧ valid steps</text>
+<text x="185" y="511" font-size="11" text-anchor="middle" fill="var(--muted)">z standardized per dim (teacher stats); gradient flows into</text>
+<text x="185" y="526" font-size="11" text-anchor="middle" fill="var(--muted)">predictor and trunk, never into the teacher</text>
+<text x="185" y="551" font-size="11" text-anchor="middle" fill="var(--muted)">logged beside it: interp = same loss for "mean of nearest</text>
+<text x="185" y="565" font-size="11" text-anchor="middle" fill="var(--muted)">visible neighbours"; ratio = loss / interp</text>
+<path d="M 486 559 L 356 559" fill="none" stroke="var(--mask)" stroke-width="1.2" marker-end="url(#arrMask)"/>
+<path d="M 486 69 C 470 69, 470 20, 350 20 C 300 20, 200 20, 185 20 L 185 464" fill="none" stroke="var(--mask)" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arrMask)"/>
+<text x="192" y="16" font-size="11" fill="var(--mask)">target z at masked steps</text>
+</svg>
+<figcaption><b>One training step.</b> The same teacher latents play two roles: masked and projected they are the trunk's input, untouched they are the target. The trunk sees the whole timeline including the mask tokens, so visible steps know where the gaps are. The predictor asks, for each masked position, what belongs there, but it may only look at trunk outputs at <b>visible</b> steps. Only the amber cells are scored. The trunk's own outputs at masked steps receive no direct loss, which is what keeps F from becoming a reconstruction head.</figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 1100 250" role="img" aria-label="Predictor detail: a query for one masked step t attends over visible trunk outputs to the left and right of its span but not over the masked steps of its own span; the interpolation baseline uses only the two nearest visible latents.">
+<text x="20" y="28" font-size="12" fill="var(--muted)" font-weight="500" letter-spacing="0.06em">PREDICTOR DETAIL · one masked step t inside a span</text>
+
+<!-- timeline of F -->
+<text x="20" y="80" font-size="12" font-weight="600">F</text>
+<g>
+  <rect x="50" y="64" width="300" height="26" fill="var(--vis-soft)" stroke="var(--vis)" stroke-width="1.2"/>
+  <rect x="350" y="64" width="160" height="26" fill="var(--panel)" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 3"/>
+  <rect x="510" y="64" width="340" height="26" fill="var(--vis-soft)" stroke="var(--vis)" stroke-width="1.2"/>
+  <rect x="850" y="64" width="80" height="26" fill="var(--panel)" stroke="var(--rule)" stroke-width="1" stroke-dasharray="3 3"/>
+  <rect x="930" y="64" width="120" height="26" fill="var(--vis-soft)" stroke="var(--vis)" stroke-width="1.2"/>
+</g>
+<text x="430" y="82" font-size="11" text-anchor="middle" fill="var(--muted)">masked span</text>
+<text x="890" y="82" font-size="11" text-anchor="middle" fill="var(--muted)">masked</text>
+<text x="200" y="108" font-size="11" text-anchor="middle" fill="var(--vis)">visible context (left)</text>
+<text x="680" y="108" font-size="11" text-anchor="middle" fill="var(--vis)">visible context (right) — may contain a repeat of the masked material</text>
+
+<!-- query -->
+<circle cx="430" cy="180" r="16" fill="var(--mask-soft)" stroke="var(--mask)" stroke-width="1.6"/>
+<text x="430" y="184" font-size="11" text-anchor="middle" class="mono" fill="var(--mask)">q_t</text>
+<text x="430" y="216" font-size="11" text-anchor="middle">mask token + RoPE(t)</text>
+<text x="430" y="231" font-size="11" text-anchor="middle" fill="var(--muted)">carries position, no content</text>
+
+<!-- attention lines to visible -->
+<g stroke="var(--vis)" stroke-width="1" fill="none" opacity="0.85">
+  <line x1="418" y1="168" x2="90" y2="92"/>
+  <line x1="420" y1="166" x2="200" y2="92"/>
+  <line x1="424" y1="165" x2="310" y2="92"/>
+  <line x1="436" y1="165" x2="560" y2="92"/>
+  <line x1="440" y1="166" x2="700" y2="92"/>
+  <line x1="443" y1="168" x2="820" y2="92"/>
+  <line x1="445" y1="170" x2="990" y2="92"/>
+</g>
+<!-- forbidden line to own span -->
+<line x1="430" y1="163" x2="430" y2="92" stroke="var(--mask)" stroke-width="1.2" stroke-dasharray="3 3"/>
+<line x1="422" y1="120" x2="438" y2="136" stroke="var(--mask)" stroke-width="1.6"/>
+<line x1="438" y1="120" x2="422" y2="136" stroke="var(--mask)" stroke-width="1.6"/>
+<text x="452" y="132" font-size="11" fill="var(--mask)">cannot attend to its own span (or any masked step)</text>
+
+<!-- interpolation baseline bracket -->
+<path d="M 340 52 L 340 44 L 520 44 L 520 52" fill="none" stroke="currentColor" stroke-width="1" opacity="0.7"/>
+<text x="430" y="40" font-size="10.5" text-anchor="middle" fill="var(--muted)">interp baseline: mean of these two neighbours only</text>
+</svg>
+<figcaption><b>Why the ratio is the honest learning curve.</b> A query for step t sees every visible step in the crop, near and far, and none of the masked ones. The interpolation baseline sees only the two visible latents adjacent to the span. Loss ÷ interp below 1 therefore measures exactly what the trunk adds beyond blending neighbours; at step 5k it is 0.72 on scores and 0.69 on performances.</figcaption>
+</figure>
+
+<section>
+<h2>Shapes at each stage (batch of one crop)</h2>
+<table>
+<tr><th>tensor</th><th>shape</th><th>note</th></tr>
+<tr><td>piano roll</td><td class="mono">4 × 88 × 1560</td><td>1536 frames + 12 overhang per side; channels active, onset-phase, velocity, validity</td></tr>
+<tr><td>teacher latents z</td><td class="mono">256 × 256</td><td>260 steps from the encoder, 2 dropped per side; standardized</td></tr>
+<tr><td>mask</td><td class="mono">256 bool</td><td>≈77 steps masked in 4 to 32-step spans; visible = valid ∧ ¬mask</td></tr>
+<tr><td>trunk input</td><td class="mono">256 × 512</td><td>projection of z; masked rows replaced by the mask token</td></tr>
+<tr><td>F</td><td class="mono">256 × 512</td><td>final LayerNorm output; the representation</td></tr>
+<tr><td>predictor queries</td><td class="mono">256 × 512</td><td>mask token at every step for static shapes; only masked ones are scored</td></tr>
+<tr><td>prediction ẑ</td><td class="mono">256 × 256</td><td>compared with z at masked valid steps</td></tr>
+</table>
+
+<h2>Three things the picture settles</h2>
+<p><b>Why the trunk sees mask tokens at all.</b> Without them the trunk would have to be run on a shorter, gap-free sequence, and its visible outputs would not know that a gap exists or how long it is. With them, the trunk is exercised on full-length sequences, which is also how it is used at inference when nothing is masked.</p>
+<p><b>Why the predictor is separate.</b> If the trunk's own output at step t had to equal the teacher latent, the last layers would turn into a reconstruction head and F would carry that specialization into every probe. The predictor absorbs it and is thrown away.</p>
+<p><b>Why spans, not scattered steps.</b> Adjacent teacher latents share input frames (0.5 s receptive field), so a lone masked step is mostly visible through its neighbours. The 4-step minimum equals the receptive field, so the interior of every span is out of any visible latent's sight.</p>
+</section>
+</main>

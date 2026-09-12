@@ -1,10 +1,22 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>unified_symbolic_rep — demos</title>
-<style>body{font:15px/1.5 system-ui,sans-serif;max-width:860px;margin:2em auto;padding:0 1em;color:#222}h1{font-size:1.5em}li{margin:.4em 0}small{color:#666}</style></head>
+<style>
+body{font:15px/1.5 system-ui,sans-serif;max-width:860px;margin:2em auto;padding:0 1em;color:#222}
+h1{font-size:1.5em}h2{font-size:1.1em;margin:1.6em 0 .4em;border-top:1px solid #ddd;padding-top:.8em}
+li{margin:.5em 0}small{color:#666}code{font-size:.9em}
+</style></head>
 <body>
 <h1>unified_symbolic_rep — demo pages</h1>
-<p><small>Time-aligned self-supervised representation learning for piano MIDI. Pages are added as stages complete.</small></p>
+<p><small>Time-aligned self-supervised representation learning for solo-piano MIDI (scores and performances). Each demo is one page under this root; pages are added as stages complete. The MIDI players need internet (CDN) and a hosted soundfont.</small></p>
+
+<h2>Stage 1 — local encoder</h2>
 <ul>
-<li><a href="stage1_demo/index.html">Stage 1 — local encoder reconstruction demo</a> <small>(s1a_v0, 6 pieces: POP909 / Aria-MIDI / ATEPP, original vs reconstruction, 2026-09-02)</small></li>
+<li><a href="stage1_demo/index.html">Reconstruction demo</a> <small>(s1a_v0 step 26000; 6 val pieces from POP909 / Aria-MIDI / ATEPP, original vs reconstruction, 2026-09-02)</small></li>
+</ul>
+
+<h2>Stage 2 — contextual trunk</h2>
+<ul>
+<li><a href="stage2_architecture/index.html">Contextual encoder mechanism</a> <small>(figure: frozen local encoder, masked-latent trunk, visible-only student and EMA teacher)</small></li>
+<li><a href="stage2_flatten_view/index.html">Flattened performance view (J5c)</a> <small>(a performance and its deterministic score-like twin: chord snap to frame, one velocity, pedal/legato undone, rubato kept; 2 ASAP performances beside their DCML score render + 4 val performances, 2026-09-12)</small></li>
 </ul>
 </body></html>

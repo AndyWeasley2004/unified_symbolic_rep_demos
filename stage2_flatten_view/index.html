@@ -1,0 +1,119 @@
+<title>Flattened performance view (J5c)</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 24px 32px; color: #222; }
+h1 { font-size: 20px; }
+h2 { font-size: 16px; margin: 28px 0 4px; border-top: 1px solid #ddd; padding-top: 14px; }
+h3 { font-size: 13px; margin: 0 0 6px; color: #555; }
+.note { font-size: 12px; color: #777; }
+.stats { font-size: 12px; color: #444; font-family: ui-monospace, monospace; margin: 4px 0 12px; }
+.cols { display: flex; gap: 24px; flex-wrap: wrap; }
+.col { flex: 1 1 420px; min-width: 380px; }
+midi-player { width: 100%; }
+midi-visualizer { display: block; height: 160px; overflow: auto; border: 1px solid #eee; }
+img.roll { width: 100%; margin-top: 12px; border: 1px solid #eee; }
+</style>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<h1>Flattened performance view (J5c)</h1>
+<p class="note">Needs internet: the MIDI players and the soundfont are loaded from a CDN. Serve this directory over HTTP (the players cannot fetch .mid over file://).</p>
+<p>A performance and its flattened twin are the J5c self-derived positive pair for the content half: the same notes, with the parts a notation program would not write down removed. Four rules, all deterministic. (1) Onsets within 30 ms chain into one chord group, but a group never spans more than 50 ms. (2) Every note of a group moves to the group's rounded median frame, so it lands on a frame the way a score render does (consecutive groups are kept two frames apart). (3) Every note takes the segment's median velocity, which removes the dynamics and the chord-role spread. (4) A note is cut at the next onset of its own voice (same hand, within an octave), which undoes pedal and legato overlap, and then by the usual caps: never past the next onset of the same pitch, never past the end, never shorter than one frame. What is left alone is rubato: flattening the tempo would need beat tracking and an alignment map, so the twin keeps the performance's timing curve -- that is the residual domain cue. The voice-successor rule is a heuristic, so a notated long note held under a moving same-hand line gets cut short; this shows up as a low median duration ratio on pedal-heavy pieces.</p>
+<p class="note">One 1440-frame segment (30 s at 48 fps) per piece; the two Beethoven pairs start at frame 0 of both the performance and the DCML score render, the four val performances at 25% of the piece. The segment is cropped before flattening.</p>
+<h2>asap / Beethoven__Piano_Sonatas_1-1__KimG01</h2>
+<p class="stats">on-frame 0.004 &rarr; 1 &nbsp; velocities 62 &rarr; 1 &nbsp; moved 0.996 (mean 6.9 ms, max 34.5 ms) &nbsp; overlap 0.478 &rarr; 0.000 &nbsp; duration ratio 0.946 (cut 0.268) &nbsp; notes 272</p>
+<div class="cols">
+<div class="col">
+<h3>Original performance</h3>
+<midi-player src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-orig"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-orig" src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Flattened</h3>
+<midi-player src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/flattened.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-flat"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-flat" src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/flattened.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Score reference (DCML render)</h3>
+<midi-player src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-scor"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-scor" src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/score.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="asap__Beethoven__Piano_Sonatas_1-1__KimG01/roll.png">
+<h2>asap / Beethoven__Piano_Sonatas_16-1__BuiJL02M</h2>
+<p class="stats">on-frame 0.018 &rarr; 1 &nbsp; velocities 83 &rarr; 1 &nbsp; moved 0.982 (mean 7.4 ms, max 31.5 ms) &nbsp; overlap 0.603 &rarr; 0.000 &nbsp; duration ratio 0.948 (cut 0.239) &nbsp; notes 330</p>
+<div class="cols">
+<div class="col">
+<h3>Original performance</h3>
+<midi-player src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-orig"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-orig" src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Flattened</h3>
+<midi-player src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/flattened.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-flat"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-flat" src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/flattened.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Score reference (DCML render)</h3>
+<midi-player src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-scor"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-scor" src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/score.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="asap__Beethoven__Piano_Sonatas_16-1__BuiJL02M/roll.png">
+<h2>aria_dedup / aria_dedup__aa__000461_0</h2>
+<p class="stats">on-frame 0.033 &rarr; 1 &nbsp; velocities 12 &rarr; 1 &nbsp; moved 0.967 (mean 6.8 ms, max 29.2 ms) &nbsp; overlap 0.918 &rarr; 0.000 &nbsp; duration ratio 0.502 (cut 0.902) &nbsp; notes 122</p>
+<div class="cols">
+<div class="col">
+<h3>Original performance</h3>
+<midi-player src="aria_dedup__aa__000461_0/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-orig"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-orig" src="aria_dedup__aa__000461_0/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Flattened</h3>
+<midi-player src="aria_dedup__aa__000461_0/flattened.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-flat"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-flat" src="aria_dedup__aa__000461_0/flattened.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="aria_dedup__aa__000461_0/roll.png">
+<h2>aria_dedup / aria_dedup__aa__000995_0</h2>
+<p class="stats">on-frame 0.085 &rarr; 1 &nbsp; velocities 13 &rarr; 1 &nbsp; moved 0.915 (mean 5.3 ms, max 20.0 ms) &nbsp; overlap 0.894 &rarr; 0.000 &nbsp; duration ratio 0.502 (cut 0.904) &nbsp; notes 94</p>
+<div class="cols">
+<div class="col">
+<h3>Original performance</h3>
+<midi-player src="aria_dedup__aa__000995_0/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-orig"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-orig" src="aria_dedup__aa__000995_0/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Flattened</h3>
+<midi-player src="aria_dedup__aa__000995_0/flattened.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-flat"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-flat" src="aria_dedup__aa__000995_0/flattened.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="aria_dedup__aa__000995_0/roll.png">
+<h2>maestro / maestro__2006__MIDI-Unprocessed_13_R1_2006_01-06_ORIG_MID--AUDIO_13_R1_2006_04_Track04_wav</h2>
+<p class="stats">on-frame 0.006 &rarr; 1 &nbsp; velocities 51 &rarr; 1 &nbsp; moved 0.994 (mean 7.0 ms, max 31.3 ms) &nbsp; overlap 0.915 &rarr; 0.000 &nbsp; duration ratio 0.490 (cut 0.875) &nbsp; notes 176</p>
+<div class="cols">
+<div class="col">
+<h3>Original performance</h3>
+<midi-player src="maestro__2006__MIDI-Unprocessed_13_R1_2006_01-06_ORIG_MID--AUDIO_13_R1_2006_04_Track04_wav/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-orig"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-orig" src="maestro__2006__MIDI-Unprocessed_13_R1_2006_01-06_ORIG_MID--AUDIO_13_R1_2006_04_Track04_wav/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Flattened</h3>
+<midi-player src="maestro__2006__MIDI-Unprocessed_13_R1_2006_01-06_ORIG_MID--AUDIO_13_R1_2006_04_Track04_wav/flattened.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-flat"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-flat" src="maestro__2006__MIDI-Unprocessed_13_R1_2006_01-06_ORIG_MID--AUDIO_13_R1_2006_04_Track04_wav/flattened.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="maestro__2006__MIDI-Unprocessed_13_R1_2006_01-06_ORIG_MID--AUDIO_13_R1_2006_04_Track04_wav/roll.png">
+<h2>atepp / atepp__09984</h2>
+<p class="stats">on-frame 0.006 &rarr; 1 &nbsp; velocities 64 &rarr; 1 &nbsp; moved 0.994 (mean 7.1 ms, max 31.0 ms) &nbsp; overlap 0.831 &rarr; 0.000 &nbsp; duration ratio 0.864 (cut 0.715) &nbsp; notes 319</p>
+<div class="cols">
+<div class="col">
+<h3>Original performance</h3>
+<midi-player src="atepp__09984/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-5-orig"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-5-orig" src="atepp__09984/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Flattened</h3>
+<midi-player src="atepp__09984/flattened.mid" sound-font="../soundfont/salamander" visualizer="#vis-5-flat"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-5-flat" src="atepp__09984/flattened.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="atepp__09984/roll.png">
