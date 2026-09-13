@@ -1,0 +1,39 @@
+[original]
+  n_notes            312
+  on_frame_frac_in   0.8942
+  on_frame_frac_out  0.8942
+  n_vel_in           39
+  n_vel_out          39
+  frac_moved         0.0000
+  mean_abs_shift_ms  0.0000
+  max_abs_shift_ms   0.0000
+  median_dur_ratio   1.0000
+  frac_dur_longer    0.0000
+  frac_dur_shorter   0.0000
+  chord_vel_std      5.4175
+[human_1.0]
+  n_notes            312
+  on_frame_frac_in   0.8942
+  on_frame_frac_out  0.0000
+  n_vel_in           39
+  n_vel_out          61
+  frac_moved         1.0000
+  mean_abs_shift_ms  9.9524
+  max_abs_shift_ms   30.0000
+  median_dur_ratio   0.9265
+  frac_dur_longer    0.2404
+  frac_dur_shorter   0.5865
+  chord_vel_std      9.5987
+[human_1.5]
+  n_notes            312
+  on_frame_frac_in   0.8942
+  on_frame_frac_out  0.0000
+  n_vel_in           39
+  n_vel_out          85
+  frac_moved         1.0000
+  mean_abs_shift_ms  15.3819
+  max_abs_shift_ms   30.0000
+  median_dur_ratio   0.9204
+  frac_dur_longer    0.3686
+  frac_dur_shorter   0.5128
+  chord_vel_std      10.6602

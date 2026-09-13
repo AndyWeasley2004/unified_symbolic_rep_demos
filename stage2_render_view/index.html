@@ -1,0 +1,164 @@
+<title>Humanised score view (J5c view B for scores)</title>
+<style>
+body { font-family: system-ui, sans-serif; margin: 24px 32px; color: #222; }
+h1 { font-size: 20px; }
+h2 { font-size: 16px; margin: 28px 0 4px; border-top: 1px solid #ddd; padding-top: 14px; }
+h3 { font-size: 13px; margin: 0 0 6px; color: #555; }
+.note { font-size: 12px; color: #777; }
+.stats { font-size: 12px; color: #444; font-family: ui-monospace, monospace; margin: 2px 0; }
+.stats b { color: #222; font-weight: 600; }
+.cols { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 12px; }
+.col { flex: 1 1 420px; min-width: 380px; }
+midi-player { width: 100%; }
+midi-visualizer { display: block; height: 160px; overflow: auto; border: 1px solid #eee; }
+img.roll { width: 100%; margin-top: 12px; border: 1px solid #eee; }
+</style>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<h1>Humanised score view (J5c view B for scores)</h1>
+<p class="note">Needs internet: the MIDI players and the soundfont are loaded from a CDN. Serve this directory over HTTP (the players cannot fetch .mid over file://).</p>
+<p>A score render and a humanised re-rendering of it are the J5b/J5c view-B positive pair on the score side: the same notes, played rather than notated. Six rules, all drawn per view from the calibrated ranges. (1) Melody lead: the top note of a chord comes in early -- or late, a third of the time, because real pianists do that too. (2) Chord asynchrony: every other note of the group is scattered around its notated onset. (3) Metrical accent: a weak velocity bonus on downbeats and beats, read straight off the 24-frames-per-quarter score grid. (4) A slow dynamics curve: velocity drifts along a random walk between knots a few seconds apart, and half the segments get a rise-fall arch on top. (5) Articulation: one mode per dynamics segment -- legato, normal, staccato, or hold, the pedal-like mode that stretches a note up to 2.5x and is what gives the real duration ratio's upper tail. (6) Residual velocity jitter on every note. Every timing change is at most 30 ms = 1.44 frames, so latent step t of the view is still step t of the original up to one step boundary -- that is the constraint that makes this a view and not a warp. The x1.5 column multiplies every deviation magnitude (ms, velocity, and the articulation ratios' distance from 1) and is the "wide" set of the calibration study, which is what <code>j5c_flat</code> trains with. What the rules do <em>not</em> produce is a tempo curve: there is no rubato here, and the view-gap gate showed that this is the remaining domain cue between a humanised score and a real performance.</p>
+<p class="note">One 1440-frame segment (30 s at 48 fps, 60 quarters on the 24-frames-per-quarter score grid) per piece; the two Beethoven scores start at frame 0, where the paired ASAP performance also starts, the four val scores at 25% of the piece. No score augmentation is applied -- no transposition, no tempo factor, no velocity shift -- so the panels differ by the rule set alone. <code>render_view</code> runs on the full note list and the segment is cropped afterwards, as in training.</p>
+<h2>dilemma / beethoven_piano_sonatas__01-1</h2>
+<p class="stats"><b>original</b> on-frame 1.000 &nbsp; velocities 1 &nbsp; chord vel std 0.00</p>
+<p class="stats"><b>human_1.0</b> on-frame 0.000 &nbsp; velocities 42 &nbsp; chord vel std 5.27 &nbsp; moved 1.000 (mean 8.3 ms, max 24.6 ms) &nbsp; duration ratio 0.931 (longer 0.336, shorter 0.545)</p>
+<p class="stats"><b>human_1.5</b> on-frame 0.000 &nbsp; velocities 34 &nbsp; chord vel std 8.81 &nbsp; moved 1.000 (mean 13.5 ms, max 30.0 ms) &nbsp; duration ratio 0.914 (longer 0.287, shorter 0.664)</p>
+<p class="stats"><b>performance</b> &mdash; reference, not paired with the score</p>
+<div class="cols">
+<div class="col">
+<h3>Original score render</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__01-1/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-0" src="dilemma__beethoven_piano_sonatas__01-1/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.0</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__01-1/human_1.0.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-1" src="dilemma__beethoven_piano_sonatas__01-1/human_1.0.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.5</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__01-1/human_1.5.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-2" src="dilemma__beethoven_piano_sonatas__01-1/human_1.5.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Real performance (ASAP)</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__01-1/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-3" src="dilemma__beethoven_piano_sonatas__01-1/performance.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="dilemma__beethoven_piano_sonatas__01-1/roll.png">
+<h2>dilemma / beethoven_piano_sonatas__16-1</h2>
+<p class="stats"><b>original</b> on-frame 1.000 &nbsp; velocities 1 &nbsp; chord vel std 0.00</p>
+<p class="stats"><b>human_1.0</b> on-frame 0.000 &nbsp; velocities 36 &nbsp; chord vel std 4.89 &nbsp; moved 1.000 (mean 6.5 ms, max 25.9 ms) &nbsp; duration ratio 0.866 (longer 0.251, shorter 0.716)</p>
+<p class="stats"><b>human_1.5</b> on-frame 0.000 &nbsp; velocities 59 &nbsp; chord vel std 6.92 &nbsp; moved 1.000 (mean 9.6 ms, max 30.0 ms) &nbsp; duration ratio 0.976 (longer 0.239, shorter 0.494)</p>
+<p class="stats"><b>performance</b> &mdash; reference, not paired with the score</p>
+<div class="cols">
+<div class="col">
+<h3>Original score render</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__16-1/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-0" src="dilemma__beethoven_piano_sonatas__16-1/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.0</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__16-1/human_1.0.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-1" src="dilemma__beethoven_piano_sonatas__16-1/human_1.0.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.5</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__16-1/human_1.5.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-2" src="dilemma__beethoven_piano_sonatas__16-1/human_1.5.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Real performance (ASAP)</h3>
+<midi-player src="dilemma__beethoven_piano_sonatas__16-1/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-3" src="dilemma__beethoven_piano_sonatas__16-1/performance.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="dilemma__beethoven_piano_sonatas__16-1/roll.png">
+<h2>pdmx / pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq</h2>
+<p class="stats"><b>original</b> on-frame 1.000 &nbsp; velocities 1 &nbsp; chord vel std 0.00</p>
+<p class="stats"><b>human_1.0</b> on-frame 0.000 &nbsp; velocities 38 &nbsp; chord vel std 5.77 &nbsp; moved 1.000 (mean 4.7 ms, max 23.8 ms) &nbsp; duration ratio 0.772 (longer 0.000, shorter 1.000)</p>
+<p class="stats"><b>human_1.5</b> on-frame 0.000 &nbsp; velocities 36 &nbsp; chord vel std 7.81 &nbsp; moved 1.000 (mean 12.2 ms, max 30.0 ms) &nbsp; duration ratio 0.882 (longer 0.152, shorter 0.821)</p>
+<div class="cols">
+<div class="col">
+<h3>Original score render</h3>
+<midi-player src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-0" src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.0</h3>
+<midi-player src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/human_1.0.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-1" src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/human_1.0.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.5</h3>
+<midi-player src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/human_1.5.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-2" src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/human_1.5.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="pdmx__QmNM8XPBHqdXeNSdWW1azKXde62TKPGNpTkf78rLJv9iuq/roll.png">
+<h2>pdmx / pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u</h2>
+<p class="stats"><b>original</b> on-frame 1.000 &nbsp; velocities 1 &nbsp; chord vel std 0.00</p>
+<p class="stats"><b>human_1.0</b> on-frame 0.000 &nbsp; velocities 19 &nbsp; chord vel std 4.61 &nbsp; moved 1.000 (mean 4.8 ms, max 24.6 ms) &nbsp; duration ratio 1.002 (longer 0.403, shorter 0.375)</p>
+<p class="stats"><b>human_1.5</b> on-frame 0.000 &nbsp; velocities 30 &nbsp; chord vel std 5.72 &nbsp; moved 1.000 (mean 9.5 ms, max 30.0 ms) &nbsp; duration ratio 0.945 (longer 0.319, shorter 0.611)</p>
+<div class="cols">
+<div class="col">
+<h3>Original score render</h3>
+<midi-player src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-0" src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.0</h3>
+<midi-player src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/human_1.0.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-1" src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/human_1.0.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.5</h3>
+<midi-player src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/human_1.5.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-2" src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/human_1.5.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="pdmx__QmNTApqJceptZisbyajTXkUGu983gahxXouNz5GNNXkS8u/roll.png">
+<h2>classic / classic__albeniz__alb_esp6_format0</h2>
+<p class="stats"><b>original</b> on-frame 0.894 &nbsp; velocities 39 &nbsp; chord vel std 5.42</p>
+<p class="stats"><b>human_1.0</b> on-frame 0.000 &nbsp; velocities 61 &nbsp; chord vel std 9.60 &nbsp; moved 1.000 (mean 10.0 ms, max 30.0 ms) &nbsp; duration ratio 0.927 (longer 0.240, shorter 0.587)</p>
+<p class="stats"><b>human_1.5</b> on-frame 0.000 &nbsp; velocities 85 &nbsp; chord vel std 10.66 &nbsp; moved 1.000 (mean 15.4 ms, max 30.0 ms) &nbsp; duration ratio 0.920 (longer 0.369, shorter 0.513)</p>
+<div class="cols">
+<div class="col">
+<h3>Original score render</h3>
+<midi-player src="classic__albeniz__alb_esp6_format0/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-0" src="classic__albeniz__alb_esp6_format0/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.0</h3>
+<midi-player src="classic__albeniz__alb_esp6_format0/human_1.0.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-1" src="classic__albeniz__alb_esp6_format0/human_1.0.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.5</h3>
+<midi-player src="classic__albeniz__alb_esp6_format0/human_1.5.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-2" src="classic__albeniz__alb_esp6_format0/human_1.5.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="classic__albeniz__alb_esp6_format0/roll.png">
+<h2>hfclassical / hfclassical__albeniz-espana_op_165</h2>
+<p class="stats"><b>original</b> on-frame 1.000 &nbsp; velocities 48 &nbsp; chord vel std 8.14</p>
+<p class="stats"><b>human_1.0</b> on-frame 0.000 &nbsp; velocities 66 &nbsp; chord vel std 12.52 &nbsp; moved 1.000 (mean 9.2 ms, max 30.0 ms) &nbsp; duration ratio 1.112 (longer 0.668, shorter 0.082)</p>
+<p class="stats"><b>human_1.5</b> on-frame 0.000 &nbsp; velocities 64 &nbsp; chord vel std 15.20 &nbsp; moved 1.000 (mean 13.5 ms, max 30.0 ms) &nbsp; duration ratio 1.009 (longer 0.348, shorter 0.434)</p>
+<div class="cols">
+<div class="col">
+<h3>Original score render</h3>
+<midi-player src="hfclassical__albeniz-espana_op_165/original.mid" sound-font="../soundfont/salamander" visualizer="#vis-5-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-5-0" src="hfclassical__albeniz-espana_op_165/original.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.0</h3>
+<midi-player src="hfclassical__albeniz-espana_op_165/human_1.0.mid" sound-font="../soundfont/salamander" visualizer="#vis-5-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-5-1" src="hfclassical__albeniz-espana_op_165/human_1.0.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>Humanised &times;1.5</h3>
+<midi-player src="hfclassical__albeniz-espana_op_165/human_1.5.mid" sound-font="../soundfont/salamander" visualizer="#vis-5-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-5-2" src="hfclassical__albeniz-espana_op_165/human_1.5.mid"></midi-visualizer>
+</div>
+</div>
+<img class="roll" src="hfclassical__albeniz-espana_op_165/roll.png">
