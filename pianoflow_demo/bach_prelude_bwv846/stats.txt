@@ -12,22 +12,22 @@
   mean_tempo_bpm   61.1  (quarter beats)
 [sample_00]
   notes            549
-  duration_s       148.59
-  velocity_mean    42.61
-  velocity_std     6.13
-  median_sus_ratio 1.973
-  mean_tempo_bpm   58.1  (quarter beats)
+  duration_s       137.97
+  velocity_mean    43.65
+  velocity_std     6.29
+  median_sus_ratio 1.938
+  mean_tempo_bpm   62.6  (quarter beats)
 [sample_01]
   notes            549
-  duration_s       135.45
-  velocity_mean    54.72
+  duration_s       128.23
+  velocity_mean    55.60
   velocity_std     7.52
-  median_sus_ratio 1.539
-  mean_tempo_bpm   63.7  (quarter beats)
+  median_sus_ratio 1.545
+  mean_tempo_bpm   67.4  (quarter beats)
 [sample_02]
   notes            549
-  duration_s       124.69
-  velocity_mean    53.11
-  velocity_std     6.43
-  median_sus_ratio 1.659
-  mean_tempo_bpm   69.4  (quarter beats)
+  duration_s       117.39
+  velocity_mean    54.04
+  velocity_std     6.50
+  median_sus_ratio 1.671
+  mean_tempo_bpm   73.9  (quarter beats)

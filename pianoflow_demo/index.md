@@ -1,16 +1,18 @@
-# PianoFlow renders (pilot, 2026-09-28)
+# PianoFlow renders (pilot, 2026-09-28, score-conditioned)
 
-PianoFlow (SyMuPe, PianoFlow-base, 24.5 M parameters, flow matching over beat-relative deviations, trained on PianoCoRe-A) renders a quantised score MIDI into a performance MIDI with the same notes one-to-one, changing onsets, durations and velocities and adding sustain as lengthened durations. There is no tempo, guidance or temperature control in the public API: the model samples its own global tempo, and seed is the only diversity knob besides the number of flow steps. Each piece below is the full ASAP score MIDI, three seeds (0, 1, 2; 10 flow steps) and one real ASAP performance. The tempo plot shows beats per minute per score beat for the three renders and the real performance.
+PianoFlow (SyMuPe, PianoFlow-base, 24.5 M parameters, flow matching over beat-relative deviations, trained on PianoCoRe-A) renders a quantised score MIDI into a performance MIDI with the same notes one-to-one, changing onsets, durations and velocities and adding sustain as lengthened durations. The public API has no guidance, temperature or text control; seed is the diversity knob besides the number of flow steps. The released package (symupe 1.1.0) also silently drops the model's score-conditioning input, so out of the box the model ignores the score's tempo marking and samples its own global tempo (renders 1.3–1.7× too slow with a wide spread); our wrapper forwards the score tokens, after which the score tempo steers the rendered tempo monotonically while score velocities still have no effect. Each piece below is the full ASAP score MIDI, three seeds (0, 1, 2; 10 flow steps, score-conditioned) and one real ASAP performance. The tempo plot shows beats per minute per score quarter for the three renders and the real performance.
 
 | piece | notes | score MIDI dur (s) | seed 0 dur (s) | seed 1 dur (s) | seed 2 dur (s) | real dur (s) | seed vel mean / std | real vel mean / std |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Bach, Prelude in C, BWV 846 (WTC I) | 549 | 70.0 | 148.6 | 135.5 | 124.7 | 139.1 | 50.1 / 6.7 | 53.6 / 12.1 |
-| Beethoven, Sonata op. 2 no. 1, I | 1683 | 156.6 | 193.7 | 174.2 | 164.7 | 164.2 | 64.6 / 12.2 | 68.9 / 15.3 |
-| Schubert, Impromptu op. 90 no. 3 | 2942 | 375.3 | 535.2 | 507.0 | 587.3 | 320.3 | 51.1 / 12.6 | 48.8 / 15.0 |
-| Chopin, Étude op. 10 no. 4 | 2239 | 112.2 | 174.6 | 152.2 | 147.0 | 115.1 | 70.9 / 9.1 | 74.9 / 11.1 |
-| Liszt, Mephisto Waltz no. 1 | 10233 | 605.1 | 1037.2 | 838.0 | 782.3 | 669.3 | 74.2 / 14.1 | 68.7 / 19.3 |
+| Bach, Prelude in C, BWV 846 (WTC I) | 549 | 70.0 | 138.0 | 128.2 | 117.4 | 139.1 | 51.1 / 6.8 | 53.6 / 12.1 |
+| Beethoven, Sonata op. 2 no. 1, I | 1683 | 156.6 | 173.5 | 166.1 | 157.0 | 164.2 | 65.9 / 11.9 | 68.9 / 15.3 |
+| Schubert, Impromptu op. 90 no. 3 | 2942 | 375.3 | 500.0 | 492.8 | 554.8 | 320.3 | 51.6 / 12.8 | 48.8 / 15.0 |
+| Chopin, Étude op. 10 no. 4 | 2239 | 112.2 | 139.3 | 131.1 | 123.8 | 115.1 | 70.8 / 10.1 | 74.9 / 11.1 |
+| Liszt, Mephisto Waltz no. 1 | 10233 | 605.1 | 731.1 | 695.4 | 685.7 | 669.3 | 75.9 / 12.7 | 68.7 / 19.3 |
 
 Durations are the last note offset. Velocity of the seeds is the mean over the three seeds of per-file mean / std.
+
+Schubert op. 90 no. 3 still renders 1.6× slower than the real performance even with the score tempo (110 qpm) supplied; the other four pieces are within 0.92–1.14× (seed means, last note offset).
 
 ## Bach, Prelude in C, BWV 846 (WTC I)
 
@@ -64,21 +66,17 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 ## Diversity on Chopin op. 10 no. 4
 
-Eight seeds on Chopin op. 10 no. 4 versus its 22 real ASAP performances, on the common 326-beat grid. Tempo = centred log beat period, dynamics = centred mean velocity per beat window; RMS over beats, averaged over pairs. Renders are 1.3–1.6× slower than the real performances and their global tempo spread (CV 0.19) is four times the real one (0.05); local tempo-curve diversity between seeds (0.129) exceeds the real inter-performer diversity (0.095); dynamics diversity is below it (6.6 vs 8.2). The real-versus-render distance (0.138 / 9.3) is above both within-group values, so renders are separable from real performances. The step-factor knob does not reach the model in symupe 1.1.0 (the two factor rows equal the default at n = 4).
+Eight seeds on Chopin op. 10 no. 4 versus its 22 real ASAP performances, on the common 326-beat grid. Tempo = centred log beat period, dynamics = centred mean velocity per beat window; RMS over beats, averaged over pairs. With score conditioning, renders run 1.1× the real duration with the same global-tempo spread (CV 0.06 vs 0.05); local tempo-curve diversity between seeds (0.103) matches the real inter-performer diversity (0.095); dynamics diversity is somewhat below it (7.1 vs 8.2). The real-versus-render distance (0.125 / 9.1) is above both within-group values, so renders remain separable from real performances. Fewer flow steps (4) shrink dynamics diversity; more (32) add local tempo jitter (micro-timing std 20 ms vs 9). Before the patch (unconditioned) the same seeds gave 170 s, CV 0.19, tempo RMS 0.129.
 
 | group | n | duration mean (s) ± CV | tempo pairwise RMS | dynamics pairwise RMS | micro-timing std (ms) |
 |---|---:|---:|---:|---:|---:|
 | real (22 perfs) | 22 | 116.5 ± 0.049 | 0.095 | 8.24 | - |
-| default | 8 | 170.5 ± 0.187 | 0.129 | 6.64 | 11.2 |
-| factor0.5 | 4 | 177.3 ± 0.256 | 0.167 | 5.75 | 11.6 |
-| factor1.0 | 4 | 177.3 ± 0.256 | 0.167 | 5.75 | 11.6 |
-| steps32 | 4 | 186.8 ± 0.228 | 0.262 | 7.76 | 24.8 |
-| steps4 | 4 | 165.4 ± 0.218 | 0.123 | 3.92 | 7.7 |
+| default | 8 | 129.2 ± 0.060 | 0.103 | 7.07 | 9.4 |
+| steps32 | 4 | 136.9 ± 0.048 | 0.176 | 7.54 | 20.0 |
+| steps4 | 4 | 114.8 ± 0.068 | 0.130 | 4.40 | 6.9 |
 
 | condition | tempo RMS real↔cond | dynamics RMS real↔cond |
 |---|---:|---:|
-| default | 0.138 | 9.26 |
-| factor0.5 | 0.152 | 9.13 |
-| factor1.0 | 0.152 | 9.13 |
-| steps32 | 0.196 | 9.13 |
-| steps4 | 0.147 | 8.89 |
+| default | 0.125 | 9.14 |
+| steps32 | 0.152 | 8.81 |
+| steps4 | 0.153 | 8.48 |
