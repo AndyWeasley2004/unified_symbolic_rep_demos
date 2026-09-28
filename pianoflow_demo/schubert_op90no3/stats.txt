@@ -10,24 +10,51 @@
   velocity_mean    48.85
   velocity_std     15.01
   mean_tempo_bpm   130.6  (quarter beats)
-[sample_00]
+[pf_00]
   notes            2942
+  model_notes      2942
   duration_s       499.97
   velocity_mean    53.52
   velocity_std     13.67
   median_sus_ratio 1.986
   mean_tempo_bpm   83.1  (quarter beats)
-[sample_01]
+[pt_00]
+  notes            2768
+  model_notes      2768
+  duration_s       261.77
+  velocity_mean    57.76
+  velocity_std     13.39
+  median_sus_ratio 5.306
+  mean_tempo_bpm   158.8  (quarter beats)
+[pf_01]
   notes            2942
+  model_notes      2942
   duration_s       492.79
   velocity_mean    50.33
   velocity_std     12.77
   median_sus_ratio 1.989
   mean_tempo_bpm   84.4  (quarter beats)
-[sample_02]
+[pt_01]
+  notes            2768
+  model_notes      2768
+  duration_s       265.42
+  velocity_mean    53.86
+  velocity_std     14.46
+  median_sus_ratio 2.415
+  mean_tempo_bpm   157.6  (quarter beats)
+[pf_02]
   notes            2942
+  model_notes      2942
   duration_s       554.75
   velocity_mean    50.91
   velocity_std     12.12
   median_sus_ratio 1.804
   mean_tempo_bpm   74.8  (quarter beats)
+[pt_02]
+  notes            2768
+  model_notes      2768
+  duration_s       243.87
+  velocity_mean    60.60
+  velocity_std     13.12
+  median_sus_ratio 4.964
+  mean_tempo_bpm   169.3  (quarter beats)
