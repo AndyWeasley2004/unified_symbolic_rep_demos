@@ -1,0 +1,226 @@
+<title>PianoFlow renders (pilot, 2026-09-28)</title>
+<meta charset="utf-8">
+<style>
+body { font-family: system-ui, sans-serif; margin: 24px 32px; color: #222; }
+h1 { font-size: 20px; }
+h2 { font-size: 16px; margin: 28px 0 4px; border-top: 1px solid #ddd; padding-top: 14px; }
+h3 { font-size: 13px; margin: 0 0 6px; color: #555; }
+.note { font-size: 12px; color: #777; }
+.stats { font-size: 12px; color: #444; font-family: ui-monospace, monospace; margin: 2px 0; }
+.stats b { color: #222; font-weight: 600; }
+.cols { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 12px; }
+.col { flex: 1 1 420px; min-width: 380px; }
+midi-player { width: 100%; }
+midi-visualizer { display: block; height: 160px; overflow: auto; border: 1px solid #eee; }
+img.roll { width: 100%; margin-top: 12px; border: 1px solid #eee; }
+table { border-collapse: collapse; font-size: 12px; margin: 8px 0; }
+th, td { border: 1px solid #ddd; padding: 3px 8px; text-align: right; }
+th:first-child, td:first-child { text-align: left; }
+</style>
+<script src="https://cdn.jsdelivr.net/combine/npm/tone@14.7.58,npm/@magenta/music@1.23.1/es6/core.js,npm/focus-visible@5,npm/html-midi-player@1.5.0"></script>
+<h1>PianoFlow renders (pilot, 2026-09-28)</h1>
+<p class="note">Needs internet: the MIDI players and the soundfont are loaded from a CDN. Serve this directory over HTTP (the players cannot fetch .mid over file://).</p>
+<p>PianoFlow (SyMuPe, PianoFlow-base, 24.5 M parameters, flow matching over beat-relative deviations, trained on PianoCoRe-A) renders a quantised score MIDI into a performance MIDI with the same notes one-to-one, changing onsets, durations and velocities and adding sustain as lengthened durations. There is no tempo, guidance or temperature control in the public API: the model samples its own global tempo, and seed is the only diversity knob besides the number of flow steps. Each piece below is the full ASAP score MIDI, three seeds (0, 1, 2; 10 flow steps) and one real ASAP performance. The tempo plot shows beats per minute per score beat for the three renders and the real performance.</p>
+<table>
+<tr><th>piece</th><th>notes</th><th>score MIDI dur (s)</th><th>seed 0 dur (s)</th><th>seed 1 dur (s)</th><th>seed 2 dur (s)</th><th>real dur (s)</th><th>seed vel mean / std</th><th>real vel mean / std</th></tr>
+<tr><td>Bach, Prelude in C, BWV 846 (WTC I)</td><td>549</td><td>70.0</td><td>148.6</td><td>135.5</td><td>124.7</td><td>139.1</td><td>50.1 / 6.7</td><td>53.6 / 12.1</td></tr>
+<tr><td>Beethoven, Sonata op. 2 no. 1, I</td><td>1683</td><td>156.6</td><td>193.7</td><td>174.2</td><td>164.7</td><td>164.2</td><td>64.6 / 12.2</td><td>68.9 / 15.3</td></tr>
+<tr><td>Schubert, Impromptu op. 90 no. 3</td><td>2942</td><td>375.3</td><td>535.2</td><td>507.0</td><td>587.3</td><td>320.3</td><td>51.1 / 12.6</td><td>48.8 / 15.0</td></tr>
+<tr><td>Chopin, Étude op. 10 no. 4</td><td>2239</td><td>112.2</td><td>174.6</td><td>152.2</td><td>147.0</td><td>115.1</td><td>70.9 / 9.1</td><td>74.9 / 11.1</td></tr>
+<tr><td>Liszt, Mephisto Waltz no. 1</td><td>10233</td><td>605.1</td><td>1037.2</td><td>838.0</td><td>782.3</td><td>669.3</td><td>74.2 / 14.1</td><td>68.7 / 19.3</td></tr>
+</table>
+<p class="note">Durations are the last note offset. Velocity of the seeds is the mean over the three seeds of per-file mean / std.</p>
+<h2>Bach, Prelude in C, BWV 846 (WTC I)</h2>
+<p class="note">Real performance: ASAP Shi05M. Full pieces; the roll shows the first 20 s (grey = sounding, black = onset; renders without sustain).</p>
+<img class="roll" src="bach_prelude_bwv846/roll.png">
+<img class="roll" src="bach_prelude_bwv846/tempo.png">
+<p class="note">Tempo: beats per minute per score quarter, 60 / diff of the performed times of consecutive quarters; seeds from the render's beat times, real (Shi05M) from the ASAP beat annotations mapped to score quarters through the score MIDI's tempo map and interpolated at every quarter. No smoothing.</p>
+<div class="cols">
+<div class="col">
+<h3>Score</h3>
+<midi-player src="bach_prelude_bwv846/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-0" src="bach_prelude_bwv846/score.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>PianoFlow seed 0</h3>
+<midi-player src="bach_prelude_bwv846/sample_00.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-1" src="bach_prelude_bwv846/sample_00.mid"></midi-visualizer>
+<p class="note"><a href="bach_prelude_bwv846/sample_00_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 1</h3>
+<midi-player src="bach_prelude_bwv846/sample_01.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-2" src="bach_prelude_bwv846/sample_01.mid"></midi-visualizer>
+<p class="note"><a href="bach_prelude_bwv846/sample_01_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 2</h3>
+<midi-player src="bach_prelude_bwv846/sample_02.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-3" src="bach_prelude_bwv846/sample_02.mid"></midi-visualizer>
+<p class="note"><a href="bach_prelude_bwv846/sample_02_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>Real performance (ASAP Shi05M)</h3>
+<midi-player src="bach_prelude_bwv846/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-0-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-0-4" src="bach_prelude_bwv846/performance.mid"></midi-visualizer>
+</div>
+</div>
+<h2>Beethoven, Sonata op. 2 no. 1, I</h2>
+<p class="note">Real performance: ASAP KimG01. Full pieces; the roll shows the first 20 s (grey = sounding, black = onset; renders without sustain).</p>
+<img class="roll" src="beethoven_op2no1_mv1/roll.png">
+<img class="roll" src="beethoven_op2no1_mv1/tempo.png">
+<p class="note">Tempo: beats per minute per score quarter, 60 / diff of the performed times of consecutive quarters; seeds from the render's beat times, real (KimG01) from the ASAP beat annotations mapped to score quarters through the score MIDI's tempo map and interpolated at every quarter. No smoothing.</p>
+<div class="cols">
+<div class="col">
+<h3>Score</h3>
+<midi-player src="beethoven_op2no1_mv1/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-0" src="beethoven_op2no1_mv1/score.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>PianoFlow seed 0</h3>
+<midi-player src="beethoven_op2no1_mv1/sample_00.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-1" src="beethoven_op2no1_mv1/sample_00.mid"></midi-visualizer>
+<p class="note"><a href="beethoven_op2no1_mv1/sample_00_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 1</h3>
+<midi-player src="beethoven_op2no1_mv1/sample_01.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-2" src="beethoven_op2no1_mv1/sample_01.mid"></midi-visualizer>
+<p class="note"><a href="beethoven_op2no1_mv1/sample_01_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 2</h3>
+<midi-player src="beethoven_op2no1_mv1/sample_02.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-3" src="beethoven_op2no1_mv1/sample_02.mid"></midi-visualizer>
+<p class="note"><a href="beethoven_op2no1_mv1/sample_02_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>Real performance (ASAP KimG01)</h3>
+<midi-player src="beethoven_op2no1_mv1/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-1-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-1-4" src="beethoven_op2no1_mv1/performance.mid"></midi-visualizer>
+</div>
+</div>
+<h2>Schubert, Impromptu op. 90 no. 3</h2>
+<p class="note">Real performance: ASAP Hou06M. Full pieces; the roll shows the first 20 s (grey = sounding, black = onset; renders without sustain).</p>
+<img class="roll" src="schubert_op90no3/roll.png">
+<img class="roll" src="schubert_op90no3/tempo.png">
+<p class="note">Tempo: beats per minute per score quarter, 60 / diff of the performed times of consecutive quarters; seeds from the render's beat times, real (Hou06M) from the ASAP beat annotations mapped to score quarters through the score MIDI's tempo map and interpolated at every quarter. No smoothing.</p>
+<div class="cols">
+<div class="col">
+<h3>Score</h3>
+<midi-player src="schubert_op90no3/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-0" src="schubert_op90no3/score.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>PianoFlow seed 0</h3>
+<midi-player src="schubert_op90no3/sample_00.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-1" src="schubert_op90no3/sample_00.mid"></midi-visualizer>
+<p class="note"><a href="schubert_op90no3/sample_00_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 1</h3>
+<midi-player src="schubert_op90no3/sample_01.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-2" src="schubert_op90no3/sample_01.mid"></midi-visualizer>
+<p class="note"><a href="schubert_op90no3/sample_01_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 2</h3>
+<midi-player src="schubert_op90no3/sample_02.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-3" src="schubert_op90no3/sample_02.mid"></midi-visualizer>
+<p class="note"><a href="schubert_op90no3/sample_02_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>Real performance (ASAP Hou06M)</h3>
+<midi-player src="schubert_op90no3/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-2-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-2-4" src="schubert_op90no3/performance.mid"></midi-visualizer>
+</div>
+</div>
+<h2>Chopin, Étude op. 10 no. 4</h2>
+<p class="note">Real performance: ASAP ADIG02. Full pieces; the roll shows the first 20 s (grey = sounding, black = onset; renders without sustain).</p>
+<img class="roll" src="chopin_op10no4/roll.png">
+<img class="roll" src="chopin_op10no4/tempo.png">
+<p class="note">Tempo: beats per minute per score quarter, 60 / diff of the performed times of consecutive quarters; seeds from the render's beat times, real (ADIG02) from the ASAP beat annotations mapped to score quarters through the score MIDI's tempo map and interpolated at every quarter. No smoothing.</p>
+<div class="cols">
+<div class="col">
+<h3>Score</h3>
+<midi-player src="chopin_op10no4/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-0" src="chopin_op10no4/score.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>PianoFlow seed 0</h3>
+<midi-player src="chopin_op10no4/sample_00.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-1" src="chopin_op10no4/sample_00.mid"></midi-visualizer>
+<p class="note"><a href="chopin_op10no4/sample_00_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 1</h3>
+<midi-player src="chopin_op10no4/sample_01.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-2" src="chopin_op10no4/sample_01.mid"></midi-visualizer>
+<p class="note"><a href="chopin_op10no4/sample_01_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 2</h3>
+<midi-player src="chopin_op10no4/sample_02.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-3" src="chopin_op10no4/sample_02.mid"></midi-visualizer>
+<p class="note"><a href="chopin_op10no4/sample_02_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>Real performance (ASAP ADIG02)</h3>
+<midi-player src="chopin_op10no4/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-3-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-3-4" src="chopin_op10no4/performance.mid"></midi-visualizer>
+</div>
+</div>
+<h2>Liszt, Mephisto Waltz no. 1</h2>
+<p class="note">Real performance: ASAP Avdeeva03. Full pieces; the roll shows the first 20 s (grey = sounding, black = onset; renders without sustain).</p>
+<img class="roll" src="liszt_mephisto/roll.png">
+<img class="roll" src="liszt_mephisto/tempo.png">
+<p class="note">Tempo: beats per minute per score quarter, 60 / diff of the performed times of consecutive quarters; seeds from the render's beat times, real (Avdeeva03) from the ASAP beat annotations mapped to score quarters through the score MIDI's tempo map and interpolated at every quarter. No smoothing.</p>
+<div class="cols">
+<div class="col">
+<h3>Score</h3>
+<midi-player src="liszt_mephisto/score.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-0"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-0" src="liszt_mephisto/score.mid"></midi-visualizer>
+</div>
+<div class="col">
+<h3>PianoFlow seed 0</h3>
+<midi-player src="liszt_mephisto/sample_00.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-1"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-1" src="liszt_mephisto/sample_00.mid"></midi-visualizer>
+<p class="note"><a href="liszt_mephisto/sample_00_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 1</h3>
+<midi-player src="liszt_mephisto/sample_01.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-2"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-2" src="liszt_mephisto/sample_01.mid"></midi-visualizer>
+<p class="note"><a href="liszt_mephisto/sample_01_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>PianoFlow seed 2</h3>
+<midi-player src="liszt_mephisto/sample_02.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-3"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-3" src="liszt_mephisto/sample_02.mid"></midi-visualizer>
+<p class="note"><a href="liszt_mephisto/sample_02_sus.mid">with sustain</a></p>
+</div>
+<div class="col">
+<h3>Real performance (ASAP Avdeeva03)</h3>
+<midi-player src="liszt_mephisto/performance.mid" sound-font="../soundfont/salamander" visualizer="#vis-4-4"></midi-player>
+<midi-visualizer type="piano-roll" id="vis-4-4" src="liszt_mephisto/performance.mid"></midi-visualizer>
+</div>
+</div>
+<h2>Diversity on Chopin op. 10 no. 4</h2>
+<p>Eight seeds on Chopin op. 10 no. 4 versus its 22 real ASAP performances, on the common 326-beat grid. Tempo = centred log beat period, dynamics = centred mean velocity per beat window; RMS over beats, averaged over pairs. Renders are 1.3–1.6× slower than the real performances and their global tempo spread (CV 0.19) is four times the real one (0.05); local tempo-curve diversity between seeds (0.129) exceeds the real inter-performer diversity (0.095); dynamics diversity is below it (6.6 vs 8.2). The real-versus-render distance (0.138 / 9.3) is above both within-group values, so renders are separable from real performances. The step-factor knob does not reach the model in symupe 1.1.0 (the two factor rows equal the default at n = 4).</p>
+<table>
+<tr><th>group</th><th>n</th><th>duration mean (s) ± CV</th><th>tempo pairwise RMS</th><th>dynamics pairwise RMS</th><th>micro-timing std (ms)</th></tr>
+<tr><td>real (22 perfs)</td><td>22</td><td>116.5 ± 0.049</td><td>0.095</td><td>8.24</td><td>-</td></tr>
+<tr><td>default</td><td>8</td><td>170.5 ± 0.187</td><td>0.129</td><td>6.64</td><td>11.2</td></tr>
+<tr><td>factor0.5</td><td>4</td><td>177.3 ± 0.256</td><td>0.167</td><td>5.75</td><td>11.6</td></tr>
+<tr><td>factor1.0</td><td>4</td><td>177.3 ± 0.256</td><td>0.167</td><td>5.75</td><td>11.6</td></tr>
+<tr><td>steps32</td><td>4</td><td>186.8 ± 0.228</td><td>0.262</td><td>7.76</td><td>24.8</td></tr>
+<tr><td>steps4</td><td>4</td><td>165.4 ± 0.218</td><td>0.123</td><td>3.92</td><td>7.7</td></tr>
+</table>
+<table>
+<tr><th>condition</th><th>tempo RMS real↔cond</th><th>dynamics RMS real↔cond</th></tr>
+<tr><td>default</td><td>0.138</td><td>9.26</td></tr>
+<tr><td>factor0.5</td><td>0.152</td><td>9.13</td></tr>
+<tr><td>factor1.0</td><td>0.152</td><td>9.13</td></tr>
+<tr><td>steps32</td><td>0.196</td><td>9.13</td></tr>
+<tr><td>steps4</td><td>0.147</td><td>8.89</td></tr>
+</table>

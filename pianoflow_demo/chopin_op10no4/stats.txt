@@ -1,0 +1,33 @@
+[score]
+  notes            2239
+  duration_s       112.16
+  velocity_mean    82.80
+  velocity_std     23.25
+  mean_tempo_bpm   176.0  (quarter beats)
+[performance]
+  notes            2272
+  duration_s       115.11
+  velocity_mean    74.91
+  velocity_std     11.10
+  mean_tempo_bpm   173.5  (quarter beats)
+[sample_00]
+  notes            2239
+  duration_s       174.57
+  velocity_mean    69.16
+  velocity_std     9.00
+  median_sus_ratio 1.050
+  mean_tempo_bpm   113.4  (quarter beats)
+[sample_01]
+  notes            2239
+  duration_s       152.18
+  velocity_mean    72.77
+  velocity_std     8.88
+  median_sus_ratio 2.259
+  mean_tempo_bpm   130.2  (quarter beats)
+[sample_02]
+  notes            2239
+  duration_s       146.96
+  velocity_mean    70.89
+  velocity_std     9.33
+  median_sus_ratio 2.018
+  mean_tempo_bpm   134.8  (quarter beats)
