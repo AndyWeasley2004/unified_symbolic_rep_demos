@@ -1,6 +1,6 @@
 # PianoFlow vs PianistTransformer (pilot, 2026-09-28)
 
-Two public score-to-performance renderers on the same five ASAP score MIDIs, beside one real ASAP performance each. PianoFlow (SyMuPe, PianoFlow-base, 24.5 M, flow matching over beat-relative deviations, trained on PianoCoRe-A) keeps the notes one-to-one, writes sustain as lengthened durations, and is steered by the score's tempo marking once our wrapper forwards the score tokens that the released package drops; seed and the number of flow steps are its diversity knobs. PianistTransformer (135 M encoder–decoder, T5Gemma backbone, temperature 1.0 / top-p 0.95) emits the score's pitches in order in absolute time, writes pedal as CC64, runs long pieces in overlapping windows, and drops zero-length duplicate score notes. Each player pairs audio with a synchronised piano roll. The tempo plot shows beats per minute per score quarter for the three renders of each model and the real performance.
+Two public score-to-performance renderers on the same five ASAP score MIDIs, beside one real ASAP performance each. PianoFlow (SyMuPe, PianoFlow-base, 24.5 M, flow matching over beat-relative deviations, trained on PianoCoRe-A) keeps the notes one-to-one, writes sustain as lengthened durations, and is steered by the score's tempo marking once our wrapper forwards the score tokens that the released package drops; seed and the number of flow steps are its diversity knobs. PianistTransformer (135 M encoder–decoder, T5Gemma backbone, temperature 1.0 / top-p 0.95) emits the score's pitches in order in absolute time, writes pedal as CC64, runs long pieces in overlapping windows, and drops zero-length duplicate score notes. Audio is prerendered (Salamander grand, first 120 s of each track, mono MP3) and played by one shared player docked at the bottom; full-length MIDI files are linked under each piece. The tempo plot shows beats per minute per score quarter for the three renders of each model and the real performance.
 
 | piece | notes (score / PT input) | score MIDI (s) | PianoFlow (s) ×3 | PianistTransformer (s) ×3 | real (s) | PF vel mean / std | PT vel mean / std | real vel mean / std |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -18,9 +18,10 @@ Global tempo: PianoFlow 0.92–1.14× the real duration on four pieces and 1.6×
 
 Folder [`bach_prelude_bwv846/`](bach_prelude_bwv846/), with `stats.txt`.
 
-- Reference: [Score](bach_prelude_bwv846/score.mid), [Real performance (Shi05M)](bach_prelude_bwv846/performance.mid)
-- PianoFlow: [seed 0](bach_prelude_bwv846/sample_00.mid), [+sustain](bach_prelude_bwv846/sample_00_sus.mid), [seed 1](bach_prelude_bwv846/sample_01.mid), [+sustain](bach_prelude_bwv846/sample_01_sus.mid), [seed 2](bach_prelude_bwv846/sample_02.mid), [+sustain](bach_prelude_bwv846/sample_02_sus.mid)
-- PianistTransformer: [sample 0](bach_prelude_bwv846/pt_00.mid), [sample 1](bach_prelude_bwv846/pt_01.mid), [sample 2](bach_prelude_bwv846/pt_02.mid)
+- Reference (audio): [Score](bach_prelude_bwv846/score.mp3), [Real performance (Shi05M)](bach_prelude_bwv846/performance.mp3)
+- PianoFlow (audio): [seed 0](bach_prelude_bwv846/pf_0.mp3), [seed 1](bach_prelude_bwv846/pf_1.mp3), [seed 2](bach_prelude_bwv846/pf_2.mp3)
+- PianistTransformer (audio): [sample 0](bach_prelude_bwv846/pt_0.mp3), [sample 1](bach_prelude_bwv846/pt_1.mp3), [sample 2](bach_prelude_bwv846/pt_2.mp3)
+- MIDI: [score](bach_prelude_bwv846/score.mid), [real (Shi05M)](bach_prelude_bwv846/performance.mid), [PF seed 0](bach_prelude_bwv846/sample_00.mid), [(+sus)](bach_prelude_bwv846/sample_00_sus.mid), [PF seed 1](bach_prelude_bwv846/sample_01.mid), [(+sus)](bach_prelude_bwv846/sample_01_sus.mid), [PF seed 2](bach_prelude_bwv846/sample_02.mid), [(+sus)](bach_prelude_bwv846/sample_02_sus.mid), [PT 0](bach_prelude_bwv846/pt_00.mid), [PT 1](bach_prelude_bwv846/pt_01.mid), [PT 2](bach_prelude_bwv846/pt_02.mid)
 
 ![tempo](bach_prelude_bwv846/tempo.png)
 
@@ -30,9 +31,10 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 Folder [`beethoven_op2no1_mv1/`](beethoven_op2no1_mv1/), with `stats.txt`.
 
-- Reference: [Score](beethoven_op2no1_mv1/score.mid), [Real performance (KimG01)](beethoven_op2no1_mv1/performance.mid)
-- PianoFlow: [seed 0](beethoven_op2no1_mv1/sample_00.mid), [+sustain](beethoven_op2no1_mv1/sample_00_sus.mid), [seed 1](beethoven_op2no1_mv1/sample_01.mid), [+sustain](beethoven_op2no1_mv1/sample_01_sus.mid), [seed 2](beethoven_op2no1_mv1/sample_02.mid), [+sustain](beethoven_op2no1_mv1/sample_02_sus.mid)
-- PianistTransformer: [sample 0](beethoven_op2no1_mv1/pt_00.mid), [sample 1](beethoven_op2no1_mv1/pt_01.mid), [sample 2](beethoven_op2no1_mv1/pt_02.mid)
+- Reference (audio): [Score](beethoven_op2no1_mv1/score.mp3), [Real performance (KimG01)](beethoven_op2no1_mv1/performance.mp3)
+- PianoFlow (audio): [seed 0](beethoven_op2no1_mv1/pf_0.mp3), [seed 1](beethoven_op2no1_mv1/pf_1.mp3), [seed 2](beethoven_op2no1_mv1/pf_2.mp3)
+- PianistTransformer (audio): [sample 0](beethoven_op2no1_mv1/pt_0.mp3), [sample 1](beethoven_op2no1_mv1/pt_1.mp3), [sample 2](beethoven_op2no1_mv1/pt_2.mp3)
+- MIDI: [score](beethoven_op2no1_mv1/score.mid), [real (KimG01)](beethoven_op2no1_mv1/performance.mid), [PF seed 0](beethoven_op2no1_mv1/sample_00.mid), [(+sus)](beethoven_op2no1_mv1/sample_00_sus.mid), [PF seed 1](beethoven_op2no1_mv1/sample_01.mid), [(+sus)](beethoven_op2no1_mv1/sample_01_sus.mid), [PF seed 2](beethoven_op2no1_mv1/sample_02.mid), [(+sus)](beethoven_op2no1_mv1/sample_02_sus.mid), [PT 0](beethoven_op2no1_mv1/pt_00.mid), [PT 1](beethoven_op2no1_mv1/pt_01.mid), [PT 2](beethoven_op2no1_mv1/pt_02.mid)
 
 ![tempo](beethoven_op2no1_mv1/tempo.png)
 
@@ -42,9 +44,10 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 Folder [`schubert_op90no3/`](schubert_op90no3/), with `stats.txt`.
 
-- Reference: [Score](schubert_op90no3/score.mid), [Real performance (Hou06M)](schubert_op90no3/performance.mid)
-- PianoFlow: [seed 0](schubert_op90no3/sample_00.mid), [+sustain](schubert_op90no3/sample_00_sus.mid), [seed 1](schubert_op90no3/sample_01.mid), [+sustain](schubert_op90no3/sample_01_sus.mid), [seed 2](schubert_op90no3/sample_02.mid), [+sustain](schubert_op90no3/sample_02_sus.mid)
-- PianistTransformer: [sample 0](schubert_op90no3/pt_00.mid), [sample 1](schubert_op90no3/pt_01.mid), [sample 2](schubert_op90no3/pt_02.mid)
+- Reference (audio): [Score](schubert_op90no3/score.mp3), [Real performance (Hou06M)](schubert_op90no3/performance.mp3)
+- PianoFlow (audio): [seed 0](schubert_op90no3/pf_0.mp3), [seed 1](schubert_op90no3/pf_1.mp3), [seed 2](schubert_op90no3/pf_2.mp3)
+- PianistTransformer (audio): [sample 0](schubert_op90no3/pt_0.mp3), [sample 1](schubert_op90no3/pt_1.mp3), [sample 2](schubert_op90no3/pt_2.mp3)
+- MIDI: [score](schubert_op90no3/score.mid), [real (Hou06M)](schubert_op90no3/performance.mid), [PF seed 0](schubert_op90no3/sample_00.mid), [(+sus)](schubert_op90no3/sample_00_sus.mid), [PF seed 1](schubert_op90no3/sample_01.mid), [(+sus)](schubert_op90no3/sample_01_sus.mid), [PF seed 2](schubert_op90no3/sample_02.mid), [(+sus)](schubert_op90no3/sample_02_sus.mid), [PT 0](schubert_op90no3/pt_00.mid), [PT 1](schubert_op90no3/pt_01.mid), [PT 2](schubert_op90no3/pt_02.mid)
 
 ![tempo](schubert_op90no3/tempo.png)
 
@@ -54,9 +57,10 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 Folder [`chopin_op10no4/`](chopin_op10no4/), with `stats.txt`.
 
-- Reference: [Score](chopin_op10no4/score.mid), [Real performance (ADIG02)](chopin_op10no4/performance.mid)
-- PianoFlow: [seed 0](chopin_op10no4/sample_00.mid), [+sustain](chopin_op10no4/sample_00_sus.mid), [seed 1](chopin_op10no4/sample_01.mid), [+sustain](chopin_op10no4/sample_01_sus.mid), [seed 2](chopin_op10no4/sample_02.mid), [+sustain](chopin_op10no4/sample_02_sus.mid)
-- PianistTransformer: [sample 0](chopin_op10no4/pt_00.mid), [sample 1](chopin_op10no4/pt_01.mid), [sample 2](chopin_op10no4/pt_02.mid)
+- Reference (audio): [Score](chopin_op10no4/score.mp3), [Real performance (ADIG02)](chopin_op10no4/performance.mp3)
+- PianoFlow (audio): [seed 0](chopin_op10no4/pf_0.mp3), [seed 1](chopin_op10no4/pf_1.mp3), [seed 2](chopin_op10no4/pf_2.mp3)
+- PianistTransformer (audio): [sample 0](chopin_op10no4/pt_0.mp3), [sample 1](chopin_op10no4/pt_1.mp3), [sample 2](chopin_op10no4/pt_2.mp3)
+- MIDI: [score](chopin_op10no4/score.mid), [real (ADIG02)](chopin_op10no4/performance.mid), [PF seed 0](chopin_op10no4/sample_00.mid), [(+sus)](chopin_op10no4/sample_00_sus.mid), [PF seed 1](chopin_op10no4/sample_01.mid), [(+sus)](chopin_op10no4/sample_01_sus.mid), [PF seed 2](chopin_op10no4/sample_02.mid), [(+sus)](chopin_op10no4/sample_02_sus.mid), [PT 0](chopin_op10no4/pt_00.mid), [PT 1](chopin_op10no4/pt_01.mid), [PT 2](chopin_op10no4/pt_02.mid)
 
 ![tempo](chopin_op10no4/tempo.png)
 
@@ -66,9 +70,10 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 Folder [`liszt_mephisto/`](liszt_mephisto/), with `stats.txt`.
 
-- Reference: [Score](liszt_mephisto/score.mid), [Real performance (Avdeeva03)](liszt_mephisto/performance.mid)
-- PianoFlow: [seed 0](liszt_mephisto/sample_00.mid), [+sustain](liszt_mephisto/sample_00_sus.mid), [seed 1](liszt_mephisto/sample_01.mid), [+sustain](liszt_mephisto/sample_01_sus.mid), [seed 2](liszt_mephisto/sample_02.mid), [+sustain](liszt_mephisto/sample_02_sus.mid)
-- PianistTransformer: [sample 0](liszt_mephisto/pt_00.mid), [sample 1](liszt_mephisto/pt_01.mid), [sample 2](liszt_mephisto/pt_02.mid)
+- Reference (audio): [Score](liszt_mephisto/score.mp3), [Real performance (Avdeeva03)](liszt_mephisto/performance.mp3)
+- PianoFlow (audio): [seed 0](liszt_mephisto/pf_0.mp3), [seed 1](liszt_mephisto/pf_1.mp3), [seed 2](liszt_mephisto/pf_2.mp3)
+- PianistTransformer (audio): [sample 0](liszt_mephisto/pt_0.mp3), [sample 1](liszt_mephisto/pt_1.mp3), [sample 2](liszt_mephisto/pt_2.mp3)
+- MIDI: [score](liszt_mephisto/score.mid), [real (Avdeeva03)](liszt_mephisto/performance.mid), [PF seed 0](liszt_mephisto/sample_00.mid), [(+sus)](liszt_mephisto/sample_00_sus.mid), [PF seed 1](liszt_mephisto/sample_01.mid), [(+sus)](liszt_mephisto/sample_01_sus.mid), [PF seed 2](liszt_mephisto/sample_02.mid), [(+sus)](liszt_mephisto/sample_02_sus.mid), [PT 0](liszt_mephisto/pt_00.mid), [PT 1](liszt_mephisto/pt_01.mid), [PT 2](liszt_mephisto/pt_02.mid)
 
 ![tempo](liszt_mephisto/tempo.png)
 
