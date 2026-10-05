@@ -16,7 +16,11 @@ Global tempo: PianoFlow 0.92–1.14× the real duration on four pieces and 1.6×
 
 ## Bach, Prelude in C, BWV 846 (WTC I)
 
-Folder [`bach_prelude_bwv846/`](bach_prelude_bwv846/): `score.mid`, `performance.mid` (ASAP Shi05M), PianoFlow `sample_00..02.mid` (+ `_sus`), PianistTransformer `pt_00..02.mid`, `stats.txt`.
+Folder [`bach_prelude_bwv846/`](bach_prelude_bwv846/), with `stats.txt`.
+
+- Reference: [Score](bach_prelude_bwv846/score.mid), [Real performance (Shi05M)](bach_prelude_bwv846/performance.mid)
+- PianoFlow: [seed 0](bach_prelude_bwv846/sample_00.mid), [+sustain](bach_prelude_bwv846/sample_00_sus.mid), [seed 1](bach_prelude_bwv846/sample_01.mid), [+sustain](bach_prelude_bwv846/sample_01_sus.mid), [seed 2](bach_prelude_bwv846/sample_02.mid), [+sustain](bach_prelude_bwv846/sample_02_sus.mid)
+- PianistTransformer: [sample 0](bach_prelude_bwv846/pt_00.mid), [sample 1](bach_prelude_bwv846/pt_01.mid), [sample 2](bach_prelude_bwv846/pt_02.mid)
 
 ![tempo](bach_prelude_bwv846/tempo.png)
 
@@ -24,7 +28,11 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 ## Beethoven, Sonata op. 2 no. 1, I
 
-Folder [`beethoven_op2no1_mv1/`](beethoven_op2no1_mv1/): `score.mid`, `performance.mid` (ASAP KimG01), PianoFlow `sample_00..02.mid` (+ `_sus`), PianistTransformer `pt_00..02.mid`, `stats.txt`.
+Folder [`beethoven_op2no1_mv1/`](beethoven_op2no1_mv1/), with `stats.txt`.
+
+- Reference: [Score](beethoven_op2no1_mv1/score.mid), [Real performance (KimG01)](beethoven_op2no1_mv1/performance.mid)
+- PianoFlow: [seed 0](beethoven_op2no1_mv1/sample_00.mid), [+sustain](beethoven_op2no1_mv1/sample_00_sus.mid), [seed 1](beethoven_op2no1_mv1/sample_01.mid), [+sustain](beethoven_op2no1_mv1/sample_01_sus.mid), [seed 2](beethoven_op2no1_mv1/sample_02.mid), [+sustain](beethoven_op2no1_mv1/sample_02_sus.mid)
+- PianistTransformer: [sample 0](beethoven_op2no1_mv1/pt_00.mid), [sample 1](beethoven_op2no1_mv1/pt_01.mid), [sample 2](beethoven_op2no1_mv1/pt_02.mid)
 
 ![tempo](beethoven_op2no1_mv1/tempo.png)
 
@@ -32,7 +40,11 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 ## Schubert, Impromptu op. 90 no. 3
 
-Folder [`schubert_op90no3/`](schubert_op90no3/): `score.mid`, `performance.mid` (ASAP Hou06M), PianoFlow `sample_00..02.mid` (+ `_sus`), PianistTransformer `pt_00..02.mid`, `stats.txt`.
+Folder [`schubert_op90no3/`](schubert_op90no3/), with `stats.txt`.
+
+- Reference: [Score](schubert_op90no3/score.mid), [Real performance (Hou06M)](schubert_op90no3/performance.mid)
+- PianoFlow: [seed 0](schubert_op90no3/sample_00.mid), [+sustain](schubert_op90no3/sample_00_sus.mid), [seed 1](schubert_op90no3/sample_01.mid), [+sustain](schubert_op90no3/sample_01_sus.mid), [seed 2](schubert_op90no3/sample_02.mid), [+sustain](schubert_op90no3/sample_02_sus.mid)
+- PianistTransformer: [sample 0](schubert_op90no3/pt_00.mid), [sample 1](schubert_op90no3/pt_01.mid), [sample 2](schubert_op90no3/pt_02.mid)
 
 ![tempo](schubert_op90no3/tempo.png)
 
@@ -40,7 +52,11 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 ## Chopin, Étude op. 10 no. 4
 
-Folder [`chopin_op10no4/`](chopin_op10no4/): `score.mid`, `performance.mid` (ASAP ADIG02), PianoFlow `sample_00..02.mid` (+ `_sus`), PianistTransformer `pt_00..02.mid`, `stats.txt`.
+Folder [`chopin_op10no4/`](chopin_op10no4/), with `stats.txt`.
+
+- Reference: [Score](chopin_op10no4/score.mid), [Real performance (ADIG02)](chopin_op10no4/performance.mid)
+- PianoFlow: [seed 0](chopin_op10no4/sample_00.mid), [+sustain](chopin_op10no4/sample_00_sus.mid), [seed 1](chopin_op10no4/sample_01.mid), [+sustain](chopin_op10no4/sample_01_sus.mid), [seed 2](chopin_op10no4/sample_02.mid), [+sustain](chopin_op10no4/sample_02_sus.mid)
+- PianistTransformer: [sample 0](chopin_op10no4/pt_00.mid), [sample 1](chopin_op10no4/pt_01.mid), [sample 2](chopin_op10no4/pt_02.mid)
 
 ![tempo](chopin_op10no4/tempo.png)
 
@@ -48,7 +64,11 @@ Tempo: beats per minute per score quarter, 60 / diff of the performed times of c
 
 ## Liszt, Mephisto Waltz no. 1
 
-Folder [`liszt_mephisto/`](liszt_mephisto/): `score.mid`, `performance.mid` (ASAP Avdeeva03), PianoFlow `sample_00..02.mid` (+ `_sus`), PianistTransformer `pt_00..02.mid`, `stats.txt`.
+Folder [`liszt_mephisto/`](liszt_mephisto/), with `stats.txt`.
+
+- Reference: [Score](liszt_mephisto/score.mid), [Real performance (Avdeeva03)](liszt_mephisto/performance.mid)
+- PianoFlow: [seed 0](liszt_mephisto/sample_00.mid), [+sustain](liszt_mephisto/sample_00_sus.mid), [seed 1](liszt_mephisto/sample_01.mid), [+sustain](liszt_mephisto/sample_01_sus.mid), [seed 2](liszt_mephisto/sample_02.mid), [+sustain](liszt_mephisto/sample_02_sus.mid)
+- PianistTransformer: [sample 0](liszt_mephisto/pt_00.mid), [sample 1](liszt_mephisto/pt_01.mid), [sample 2](liszt_mephisto/pt_02.mid)
 
 ![tempo](liszt_mephisto/tempo.png)
 
